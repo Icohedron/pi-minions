@@ -9,7 +9,10 @@ None.
 ## Action
 
 First, call the `spawn` tool with:
-- `task`: `Return the exact word show-check`
+
+```ts
+spawn({ tasks: [{ task: "Return the exact word show-check" }] })
+```
 
 Extract the minion name or ID from the `spawn` response.
 

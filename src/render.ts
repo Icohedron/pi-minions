@@ -76,14 +76,11 @@ export function renderCall(args: Record<string, unknown>, theme: Theme, _ctx: un
     return new Text(text, 0, 0);
   }
 
-  let task = String(args.task ?? "");
-  if (args.tasks && Array.isArray(args.tasks) && args.tasks.length === 1) {
-    task = String(args.tasks[0]);
-  }
-
+  const firstTask = Array.isArray(args.tasks) ? args.tasks[0] : undefined;
+  const task = String(firstTask?.task ?? "");
   const firstTaskLine = task.split("\n")[0];
   const taskPreview = firstTaskLine.length > 60 ? `${firstTaskLine.slice(0, 60)}…` : firstTaskLine;
-  const model = args.model ? ` [${args.model}]` : "";
+  const model = firstTask?.model ? ` [${firstTask.model}]` : "";
 
   const text =
     theme.fg("toolTitle", theme.bold("spawn ")) +

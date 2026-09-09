@@ -9,7 +9,10 @@ None.
 ## Action
 
 Call the `spawn` tool with:
-- `task`: `Say hello in one sentence.`
+
+```ts
+spawn({ tasks: [{ task: "Say hello in one sentence." }] })
+```
 
 After the spawn completes, extract the minion ID from the spawn result header (`Minion <name> (<id>) completed.`), then run:
 ```bash

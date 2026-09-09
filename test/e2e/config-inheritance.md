@@ -9,7 +9,10 @@ None.
 ## Action
 
 Call the `spawn` tool with:
-- `task`: `Use the bash tool to run: echo "CONFIG_INHERITANCE_MARKER_12345". Report the output.`
+
+```ts
+spawn({ tasks: [{ task: "Use the bash tool to run: echo \"CONFIG_INHERITANCE_MARKER_12345\". Report the output." }] })
+```
 
 After the spawn completes, read the minion's transcript file.
 

@@ -15,6 +15,18 @@ describe("minions skill", () => {
     expect(text).toContain("foreground");
   });
 
+  it("teaches tasks-only inputs for single minions and parallel batches", () => {
+    const text = getMinionsSkill();
+
+    expect(text).toContain("required, non-empty `tasks` array");
+    expect(text).toContain("required `task`");
+    expect(text).toContain("optional `agent` and `model`");
+    expect(text).toContain("One item");
+    expect(text).toContain("Two or more items");
+    expect(text).toContain("/spawn <task> [--model <model>]");
+    expect(text).not.toContain("Provide `task`, optional `agent`");
+  });
+
   it("states removed delegation surfaces are unavailable without naming removed tool commands", () => {
     const text = getMinionsSkill();
 

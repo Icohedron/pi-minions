@@ -1,6 +1,6 @@
 # Test: batch-spawn
 
-Verify batch spawn executes multiple minions in parallel under a single render block.
+Verify a multi-item `tasks` array executes minions in parallel and returns one combined batch result.
 
 ## Setup
 
@@ -8,14 +8,21 @@ None.
 
 ## Action
 
-Call the `spawn` tool with a `tasks` array containing 3 minions:
-- Task 1: `Return 'alpha'`
-- Task 2: `Return 'beta'`
-- Task 3: `Return 'gamma'`
+Call the `spawn` tool once with three task entries:
+
+```ts
+spawn({
+  tasks: [
+    { task: "Return 'alpha'" },
+    { task: "Return 'beta'" },
+    { task: "Return 'gamma'" }
+  ]
+})
+```
 
 ## Expected
 
-- The tool returns successfully with results from all 3 minions
+- The tool returns successfully with one combined batch result from all 3 minions, not a single-minion result
 - The result text contains `alpha`, `beta`, and `gamma`
 - The debug log shows `batch-start` with count=3 and `batch-complete` with succeeded=3
 

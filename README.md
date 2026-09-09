@@ -4,8 +4,7 @@
 
 ## Features
 
-- Foreground `spawn` tool for single minion delegation
-- Batch foreground `spawn` via a `tasks` array for parallel independent work
+- Foreground [`spawn`](docs/reference.md#spawn) via `tasks` for single minions or parallel batches
 - Named agent discovery from pi/agents and minions directories
 - Ephemeral built-in minions when no agent is specified
 - `halt` for aborting running foreground minions
@@ -29,7 +28,7 @@ Background minions, live detaching, and user steering commands are not part of t
 For LLM-callable tools, use:
 
 ```ts
-spawn({ task: "Audit the auth module" })
+spawn({ tasks: [{ task: "Audit the auth module" }] })
 spawn({ tasks: [{ task: "Read src" }, { task: "Read test" }] })
 list_agents({})
 list_minions({})

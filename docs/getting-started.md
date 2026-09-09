@@ -8,11 +8,11 @@ This tutorial walks through foreground minion delegation in pi.
 /spawn Read src/index.ts and summarize the registered tools
 ```
 
-The parent waits for the minion result. Progress is streamed while the minion runs.
+The parent waits for the minion result. Progress is streamed while the minion runs. For the tool-call shape, see the [spawn reference](reference.md#spawn).
 
 ## 2. Spawn a batch of foreground minions
 
-Use the LLM-callable `spawn` tool with `tasks` when subtasks are independent:
+Use the LLM-callable `spawn` tool with multiple task entries when subtasks are independent:
 
 ```ts
 spawn({
@@ -23,7 +23,7 @@ spawn({
 })
 ```
 
-Each task runs in an isolated foreground session and the parent receives a combined result.
+The tasks run concurrently in isolated foreground sessions and the parent receives a combined result.
 
 ## 3. Pick named agents
 
@@ -31,10 +31,10 @@ List available named agents before choosing one:
 
 ```ts
 list_agents({})
-spawn({ agent: "researcher", task: "Compare two implementation options" })
+spawn({ tasks: [{ task: "Compare two implementation options", agent: "researcher" }] })
 ```
 
-If no `agent` is supplied, pi-minions uses an ephemeral built-in minion when enabled.
+For agent defaults and ephemeral minions, see [Agents](agents.md).
 
 ## 4. Inspect foreground activity
 

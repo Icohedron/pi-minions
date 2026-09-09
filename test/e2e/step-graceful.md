@@ -9,8 +9,10 @@ None.
 ## Action
 
 Call the `spawn` tool with:
-- `agent`: `e2e-step-limit`
-- `task`: `Read this codebase and analyze it for duplication.`
+
+```ts
+spawn({ tasks: [{ task: "Read this codebase and analyze it for duplication.", agent: "e2e-step-limit" }] })
+```
 
 ## Expected
 

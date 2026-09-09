@@ -9,14 +9,16 @@ None.
 
 ## Action
 
-Spawn 4 foreground minions **in a single response** (all 4 spawn calls emitted
-together so they run in parallel). Give each a task designed to complete at
-a different speed:
+Emit four separate `spawn` calls IN A SINGLE RESPONSE, each with a one-item
+`tasks` array, so the calls run in parallel. Do NOT combine them into a batch.
+The tasks are designed to finish at different speeds:
 
-- Minion A: `Run bash: echo alpha. Then say: alpha done`
-- Minion B: `Run bash: sleep 2 && echo beta. Then say: beta done`
-- Minion C: `Run bash: echo gamma. Then say: gamma done`
-- Minion D: `Run bash: sleep 3 && echo delta. Then say: delta done`
+```ts
+spawn({ tasks: [{ task: "Run bash: echo alpha. Then say: alpha done" }] })
+spawn({ tasks: [{ task: "Run bash: sleep 2 && echo beta. Then say: beta done" }] })
+spawn({ tasks: [{ task: "Run bash: echo gamma. Then say: gamma done" }] })
+spawn({ tasks: [{ task: "Run bash: sleep 3 && echo delta. Then say: delta done" }] })
+```
 
 After all 4 complete, run:
 

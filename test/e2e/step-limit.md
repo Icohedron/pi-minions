@@ -9,8 +9,10 @@ None.
 ## Action
 
 Call the `spawn` tool with:
-- `agent`: `e2e-step-limit`
-- `task`: `Read every file in the src/ directory one by one. For each file provide a 500 word summary.`
+
+```ts
+spawn({ tasks: [{ task: "Read every file in the src/ directory one by one. For each file provide a 500 word summary.", agent: "e2e-step-limit" }] })
+```
 
 ## Expected
 

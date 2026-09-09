@@ -17,34 +17,27 @@ import type { AgentConfig, AgentStatus, UsageStats } from "../types.js";
 import { emptyUsage } from "../types.js";
 
 const TaskDescriptor = Type.Object({
-  task: Type.String(),
-  agent: Type.Optional(Type.String()),
-  model: Type.Optional(Type.String()),
-});
-
-export const SpawnToolParams = Type.Object({
-  task: Type.Optional(
-    Type.String({ description: "Task to delegate to the agent (use this OR tasks, not both)" }),
-  ),
+  task: Type.String({ description: "Task to delegate to this minion" }),
   agent: Type.Optional(
     Type.String({
       description:
         "Name of the agent to invoke. If omitted, spawns an ephemeral minion with default capabilities.",
     }),
   ),
-  model: Type.Optional(Type.String({ description: "Override the agent's model" })),
-  tasks: Type.Optional(
-    Type.Array(TaskDescriptor, {
-      minItems: 1,
-      description: "Array of task descriptors for batch spawning (use this OR task, not both)",
-    }),
-  ),
+  model: Type.Optional(Type.String({ description: "Override the agent's model for this task" })),
 });
-export type SpawnToolParams = Static<typeof SpawnToolParams>;
 
-function isBatchParams(params: SpawnToolParams): boolean {
-  return "tasks" in params && Array.isArray(params.tasks) && params.tasks.length > 0;
-}
+export const SpawnToolParams = Type.Object(
+  {
+    tasks: Type.Array(TaskDescriptor, {
+      minItems: 1,
+      description:
+        "Tasks to delegate. One item runs a single minion; multiple items run minions in parallel.",
+    }),
+  },
+  { additionalProperties: false },
+);
+export type SpawnToolParams = Static<typeof SpawnToolParams>;
 
 export interface BatchMinionItem {
   id: string;
@@ -259,7 +252,7 @@ async function executeSpawn(
         emptyUsage(),
       ),
       finalOutput,
-      isBatch: true,
+      isBatch: !isSingleMinion,
       minions: [...minions],
       outputPreviewLines,
       spinnerFrames,
@@ -298,24 +291,15 @@ export function spawn(tree: AgentTree, pi: ExtensionAPI, subsessionManager: Subs
     onUpdate: AgentToolUpdateCallback<SpawnToolDetails> | undefined,
     ctx: ExtensionContext,
   ): Promise<AgentToolResult<SpawnToolDetails>> {
-    const hasTask = params.task && typeof params.task === "string" && params.task.length > 0;
-    const hasTasks = isBatchParams(params);
-
-    if (hasTask && hasTasks) {
-      throw new Error("Cannot specify both 'task' and 'tasks'. Use one or the other.");
-    }
-    if (!hasTask && !hasTasks) {
-      throw new Error("Must specify either 'task' (single) or 'tasks' (batch).");
+    const { tasks } = params;
+    if (!Array.isArray(tasks) || tasks.length === 0) {
+      throw new Error("Must specify a non-empty 'tasks' array.");
     }
 
-    const specs = hasTasks
-      ? params.tasks || []
-      : [{ task: params.task || "", agent: params.agent, model: params.model }];
-
-    logger.debug("spawn:tool", hasTasks ? "batch-mode" : "single-mode", {
-      count: specs.length,
+    logger.debug("spawn:tool", tasks.length === 1 ? "single-mode" : "batch-mode", {
+      count: tasks.length,
     });
 
-    return executeSpawn(specs, _toolCallId, tree, pi, subsessionManager, signal, onUpdate, ctx);
+    return executeSpawn(tasks, _toolCallId, tree, pi, subsessionManager, signal, onUpdate, ctx);
   };
 }

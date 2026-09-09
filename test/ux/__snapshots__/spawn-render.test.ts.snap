@@ -2,6 +2,6 @@
 
 exports[`spawn rendering > renders spawn tool progress > spawn-progress 1`] = `
 [
-  "[spawn] Called with: {"task":"test"}",
+  "[spawn] Called with: {"tasks":[{"task":"test"}]}",
 ]
 `;

@@ -39,15 +39,22 @@ describe("parseSpawnArgs", () => {
 });
 
 describe("createSpawnHandler", () => {
-  it("always directs the parent agent to use the foreground spawn tool", async () => {
+  it.each([
+    { args: "do work", task: { task: "do work" } },
+    { args: "do work --model haiku", task: { task: "do work", model: "haiku" } },
+    {
+      args: 'review "quoted" paths --model provider/model',
+      task: { task: 'review "quoted" paths', model: "provider/model" },
+    },
+  ])("directs the parent to use a one-item tasks payload for $args", async ({ args, task }) => {
     const sendUserMessage = vi.fn();
     const handler = createSpawnHandler({ sendUserMessage } as any);
     const ctx = { ui: { notify: vi.fn() } } as any;
 
-    await handler("do work --model haiku", ctx);
+    await handler(args, ctx);
 
     expect(sendUserMessage).toHaveBeenCalledWith(
-      "Use the spawn tool to delegate this task to a minion: do work\nSet the model override to: haiku",
+      `Use the spawn tool with these arguments:\n${JSON.stringify({ tasks: [task] })}`,
       { deliverAs: "steer" },
     );
     expect(ctx.ui.notify).not.toHaveBeenCalled();

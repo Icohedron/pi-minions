@@ -53,8 +53,7 @@ export function createSpawnHandler(pi: ExtensionAPI) {
       return;
     }
 
-    let directive = `Use the spawn tool to delegate this task to a minion: ${parsed.task}`;
-    if (parsed.model) directive += `\nSet the model override to: ${parsed.model}`;
+    const directive = `Use the spawn tool with these arguments:\n${JSON.stringify({ tasks: [parsed] })}`;
     pi.sendUserMessage(directive, { deliverAs: "steer" });
   };
 }

@@ -14,16 +14,25 @@
 
 ### spawn
 
+`tasks` is the only top-level option. It is required and must be a non-empty array of objects with a required `task` string and optional `agent` and `model` strings. Top-level `task`, `agent`, and `model` options are not supported.
+
+- One item runs one foreground minion with a single-minion result and display, not a batch wrapper.
+- Two or more items run concurrently as a batch with a combined result and batch display.
+
 Single foreground minion:
 
 ```ts
-spawn({ task: "Read src/index.ts and summarize it" })
+spawn({ tasks: [{ task: "Read src/index.ts and summarize it" }] })
 ```
 
-Named agent and model override:
+Named agent and model override for one task entry:
 
 ```ts
-spawn({ agent: "researcher", model: "claude-haiku", task: "Research package files" })
+spawn({
+  tasks: [
+    { task: "Research package files", agent: "researcher", model: "claude-haiku" }
+  ]
+})
 ```
 
 Batch foreground minions:
@@ -32,12 +41,12 @@ Batch foreground minions:
 spawn({
   tasks: [
     { task: "Inspect source" },
-    { agent: "tester", task: "Inspect tests" }
+    { task: "Inspect tests", agent: "tester" }
   ]
 })
 ```
 
-`spawn` accepts either `task` or `tasks`, not both.
+See [Agents](agents.md) for named configurations and model defaults.
 
 ### halt
 

@@ -8,7 +8,13 @@ None.
 
 ## Action
 
-Spawn 2 `e2e-timeout` foreground minions in parallel. Give each minion the task: `Say hello, then use the bash tool to run sleep 60`.
+Emit two separate `spawn` calls IN A SINGLE RESPONSE, each with a one-item
+`tasks` array. Do NOT combine them into a batch:
+
+```ts
+spawn({ tasks: [{ task: "Say hello, then use the bash tool to run sleep 60", agent: "e2e-timeout" }] })
+spawn({ tasks: [{ task: "Say hello, then use the bash tool to run sleep 60", agent: "e2e-timeout" }] })
+```
 
 After both complete, run:
 ```bash

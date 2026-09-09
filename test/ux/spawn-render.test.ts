@@ -7,7 +7,7 @@ describe("spawn rendering", () => {
     const harness = createTestHarness({ width: 120 });
 
     // Simulate spawn tool execution
-    await harness.simulateToolCall("spawn", { task: "test" });
+    await harness.simulateToolCall("spawn", { tasks: [{ task: "test" }] });
     await harness.waitForRender(1);
 
     expect(harness.getLastFrame()).toMatchSnapshot("spawn-progress");
@@ -16,8 +16,8 @@ describe("spawn rendering", () => {
   it("captures multiple renders in sequence", async () => {
     const harness = createTestHarness({ width: 120 });
 
-    await harness.simulateToolCall("spawn", { task: "first" });
-    await harness.simulateToolCall("spawn", { task: "second" });
+    await harness.simulateToolCall("spawn", { tasks: [{ task: "first" }] });
+    await harness.simulateToolCall("spawn", { tasks: [{ task: "second" }] });
     await harness.waitForRender(2);
 
     expect(harness.tui.renderLog).toHaveLength(2);
@@ -27,7 +27,7 @@ describe("spawn rendering", () => {
   it("tracks minion lifecycle through tree", async () => {
     const harness = createTestHarness({ width: 120 });
 
-    await harness.simulateToolCall("spawn", { task: "lifecycle test" });
+    await harness.simulateToolCall("spawn", { tasks: [{ task: "lifecycle test" }] });
 
     const running = harness.tree.getRunning();
     expect(running).toHaveLength(1);
@@ -37,7 +37,7 @@ describe("spawn rendering", () => {
   it("verifies subsession creation on tool call", async () => {
     const harness = createTestHarness({ width: 120 });
 
-    await harness.simulateToolCall("spawn", { task: "subsession test" });
+    await harness.simulateToolCall("spawn", { tasks: [{ task: "subsession test" }] });
 
     const sessions = harness.subsessionManager.list();
     expect(sessions).toHaveLength(1);
@@ -49,7 +49,7 @@ describe("harness assertions", () => {
   it("can assert session state", async () => {
     const harness = createTestHarness({ width: 120 });
 
-    await harness.simulateToolCall("spawn", { task: "session test" });
+    await harness.simulateToolCall("spawn", { tasks: [{ task: "session test" }] });
 
     const sessions = harness.subsessionManager.list();
     const sessionId = sessions[0]?.sessionId;

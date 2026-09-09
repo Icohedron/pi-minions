@@ -33,7 +33,7 @@ Common frontmatter fields:
 
 | Field | Purpose |
 |---|---|
-| `name` | Agent name used by `spawn({ agent })` |
+| `name` | Agent name selected by `tasks[].agent` in [`spawn`](reference.md#spawn) |
 | `description` | Shown by `list_agents` |
 | `displayName` | Preferred minion display name |
 | `model` | Default model for this agent |
@@ -46,15 +46,19 @@ Common frontmatter fields:
 
 ```ts
 list_agents({})
-spawn({ agent: "researcher", task: "Compare migration options" })
+spawn({ tasks: [{ task: "Compare migration options", agent: "researcher" }] })
 ```
 
-Use `model` on the spawn call to override the agent default for that run.
+Set `model` on the task entry to override the agent default for that run.
 
 ```ts
-spawn({ agent: "researcher", model: "claude-sonnet", task: "Review the architecture" })
+spawn({
+  tasks: [
+    { task: "Review the architecture", agent: "researcher", model: "claude-sonnet" }
+  ]
+})
 ```
 
 ## Ephemeral minions
 
-If no agent is specified, pi-minions creates a built-in ephemeral minion when `allowEphemeral` is enabled.
+If a task entry omits `agent`, pi-minions creates a built-in ephemeral minion when [`allowEphemeral`](configuration.md#allowephemeral) is enabled.

@@ -29,11 +29,11 @@ Default: built-in minion name pool.
 
 ## allowEphemeral
 
-Whether `spawn({ task })` may create a built-in ephemeral minion when no named `agent` is supplied.
+Whether [`spawn`](reference.md#spawn) may create a built-in ephemeral minion for a task entry that omits `agent`.
 
 Default: `true`.
 
-If disabled, callers must specify a named agent.
+If disabled, every task entry must specify a named agent.
 
 ## display.outputPreviewLines
 

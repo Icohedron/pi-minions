@@ -9,8 +9,10 @@ None.
 ## Action
 
 Call the `spawn` tool with:
-- `agent`: `e2e-timeout`
-- `task`: `Read every file in the src/ directory and every file in the test/ directory one by one. For each file provide a detailed 1000 word analysis.`
+
+```ts
+spawn({ tasks: [{ task: "Read every file in the src/ directory and every file in the test/ directory one by one. For each file provide a detailed 1000 word analysis.", agent: "e2e-timeout" }] })
+```
 
 ## Expected
 

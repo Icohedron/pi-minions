@@ -1,18 +1,18 @@
 # Patterns
 
-How-to recipes for foreground minion delegation.
+How-to recipes for foreground minion delegation. See the [spawn reference](reference.md#spawn) for input and result details.
 
 ## Delegate one isolated task
 
 Use a single foreground minion when a task needs focused context and the parent needs the result before continuing.
 
 ```ts
-spawn({ task: "Inspect src/config.ts and summarize supported settings" })
+spawn({ tasks: [{ task: "Inspect src/config.ts and summarize supported settings" }] })
 ```
 
 ## Run independent work in parallel
 
-Use batch `tasks` for independent investigations.
+Group independent investigations in one call with multiple task entries.
 
 ```ts
 spawn({
@@ -30,10 +30,10 @@ Return summaries from each minion, then integrate the findings in the parent.
 
 ```ts
 list_agents({})
-spawn({ agent: "researcher", task: "Research the package publishing behavior" })
+spawn({ tasks: [{ task: "Research the package publishing behavior", agent: "researcher" }] })
 ```
 
-Named agents are discovered from global and project agent/minion directories. If no named agent is needed, omit `agent` to use an ephemeral minion.
+See [Agents](agents.md) for discovery locations and ephemeral minions.
 
 ## Monitor active foreground minions
 

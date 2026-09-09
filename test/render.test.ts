@@ -125,24 +125,43 @@ describe("renderCall", () => {
     bold: (text: string) => text,
   } as any;
 
-  it("renders task preview for single-task spawn with agent", () => {
-    const result = renderCall({ agent: "scout", task: "find bugs" }, theme, {});
+  it("renders the task descriptor preview for a one-item array with an agent", () => {
+    const result = renderCall({ tasks: [{ agent: "scout", task: "find bugs" }] }, theme, {});
     const text = result.render(100).join("\n");
     expect(text).toContain("spawn");
     expect(text).toContain("find bugs");
   });
 
-  it("renders task preview for single-task spawn without agent", () => {
-    const result = renderCall({ task: "fix the bug" }, theme, {});
+  it("renders a one-item array as a single call without a batch header", () => {
+    const result = renderCall({ tasks: [{ task: "fix the bug" }] }, theme, {});
     const text = result.render(100).join("\n");
     expect(text).toContain("spawn");
     expect(text).toContain("fix the bug");
+    expect(text).not.toContain("[object Object]");
+    expect(text).not.toContain("[1 minion]");
   });
 
-  it("renders model when specified", () => {
-    const result = renderCall({ task: "t", model: "claude-4" }, theme, {});
+  it("renders the model from the single task descriptor", () => {
+    const result = renderCall({ tasks: [{ task: "t", model: "claude-4" }] }, theme, {});
     const text = result.render(100).join("\n");
     expect(text).toContain("claude-4");
+  });
+
+  it("shows only the first line of a single task's preview", () => {
+    const result = renderCall({ tasks: [{ task: "first line\nsecond line" }] }, theme, {});
+    const text = result.render(100).join("\n");
+    expect(text).toContain("first line");
+    expect(text).not.toContain("second line");
+  });
+
+  it.each([
+    {},
+    { tasks: [] },
+    { tasks: [{}] },
+    { tasks: [null] },
+  ])("renders incomplete streaming arguments without object placeholders: %j", (args) => {
+    const text = renderCall(args, theme, {}).render(100).join("\n").trim();
+    expect(text).toBe("spawn");
   });
 
   it("renders batch header with minion count", () => {
@@ -192,7 +211,7 @@ describe("renderCall", () => {
 
   it("truncates long task previews", () => {
     const longTask = "a".repeat(100);
-    const result = renderCall({ task: longTask }, theme, {});
+    const result = renderCall({ tasks: [{ task: longTask }] }, theme, {});
     const text = result.render(100).join("\n");
     // Task previews longer than 60 chars are truncated with "…"
     // Original task is 100 chars, truncated to 60 + "…" = 61 chars

@@ -9,7 +9,10 @@ None.
 ## Action
 
 Call the `spawn` tool with:
-- `task`: `Say hello in one sentence.`
+
+```ts
+spawn({ tasks: [{ task: "Say hello in one sentence." }] })
+```
 
 After the spawn completes, use the minion name and ID from the spawn result header to locate the transcript at `/tmp/logs/pi-minions/minions/<id>-<name>.log`, then read it.
 

@@ -41,17 +41,18 @@ export default function (pi: ExtensionAPI): void {
     name: "spawn",
     label: "Spawn Minion",
     description:
-      "Delegate a task to a named agent or an ephemeral minion with isolated foreground context. " +
-      "If no agent name is provided, spawns an ephemeral minion with default capabilities. " +
+      "Delegate tasks to named agents or ephemeral minions with isolated foreground context. " +
+      "Pass a non-empty tasks array: one item runs a single minion; multiple items run minions in parallel. " +
+      "If a task entry omits the agent name, spawns an ephemeral minion with default capabilities. " +
       "Agents are discovered from global and project agent/minion directories, including ~/.pi/agent/{agents,minions}/, ~/.agents/{agents,minions}/, .pi/{agents,minions}/, and .agents/{agents,minions}/. " +
-      "The agent runs as a file-based foreground session with parent tracking.",
-    promptSnippet: "Spawn a foreground minion for isolated task delegation",
+      "Each agent runs as a file-based foreground session with parent tracking.",
+    promptSnippet: "Spawn foreground minions from a tasks array for isolated delegation",
     promptGuidelines: [
-      "Use spawn for foreground task delegation. The tool blocks until the minion completes and returns its result.",
-      "To spawn multiple minions in parallel, use the `tasks` array parameter with multiple task descriptors. Each task can specify `task`, optional `agent`, and optional `model`.",
-      "For single task delegation, use the `task` parameter directly.",
+      "Use spawn for foreground task delegation. The tool blocks until all requested minions complete and returns their results.",
+      "Always pass spawn a non-empty `tasks` array. Each item requires `task` and accepts optional `agent` and `model`.",
+      "Use one item in spawn's `tasks` array for a single minion; use multiple items to run minions in parallel.",
       "Use list_agents to discover available named agents before spawning by name.",
-      "Omit the agent parameter to spawn an ephemeral minion with default capabilities.",
+      "Omit `agent` within a spawn task descriptor to spawn an ephemeral minion with default capabilities.",
       "When a spawn result says [HALTED], the user intentionally stopped the minion. Do NOT retry, re-spawn, or ask about it. Acknowledge and move on.",
       "Use list_minions and show_minion to inspect foreground minion activity.",
     ],

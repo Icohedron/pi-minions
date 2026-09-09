@@ -23,8 +23,8 @@ pi-minions is a pi extension for foreground subagent orchestration.
 
 ## Data flow
 
-1. Parent calls `spawn` or `/spawn` directs the parent to call it.
-2. `src/tools/spawn.ts` validates single versus batch params, resolves named or ephemeral agent config, creates tree nodes, and starts a `BatchCoordinator`.
+1. Parent calls [`spawn`](reference.md#spawn) or `/spawn` directs the parent to call it.
+2. `src/tools/spawn.ts` validates the `tasks` array, resolves each entry's named or ephemeral agent config, creates tree nodes, and starts a `BatchCoordinator`.
 3. Each minion is run through `runSingleMinion()` and `runMinionSession()`.
 4. `SubsessionManager` creates a file-backed pi agent session, filters recursive extension loading, binds extensions, tracks metadata, and emits progress events.
 5. Progress callbacks update `AgentTree`; renderers/status/observability read from that tree.

@@ -52,6 +52,31 @@ describe("BatchCoordinator", () => {
     });
   }
 
+  it.each([1, 2])("reports single versus batch details for %i minions", (count) => {
+    const minions = Array.from({ length: count }, (_, index) => makeMinion({ id: `m${index}` }));
+    const updates: unknown[] = [];
+    const coordinator = new BatchCoordinator({
+      minions,
+      isSingleMinion: count === 1,
+      batchId: "batch-1",
+      batchTask: "test batch",
+      outputPreviewLines: 3,
+      spinnerFrames: ["-"],
+      onUpdate: (update) => updates.push(update.details),
+    });
+
+    coordinator.emit();
+
+    const expected = {
+      id: count === 1 ? minions[0].id : "batch-1",
+      isBatch: count > 1,
+      minions,
+    };
+    expect(coordinator.getDetails()).toMatchObject(expected);
+    expect(updates).toHaveLength(1);
+    expect(updates[0]).toMatchObject(expected);
+  });
+
   it("advances spinner frames for running minions and emits updates", () => {
     const minions = [makeMinion({ status: "running", spinnerFrame: 0 })];
     const onUpdate = vi.fn();

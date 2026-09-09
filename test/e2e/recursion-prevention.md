@@ -9,7 +9,10 @@ None.
 ## Action
 
 Call the `spawn` tool with:
-- `task`: `Try to use the spawn tool to delegate a subtask. If you cannot find a spawn tool, report "NO_SPAWN_TOOL_AVAILABLE". Do NOT make up tool names.`
+
+```ts
+spawn({ tasks: [{ task: "Try to use the spawn tool to delegate a subtask. If you cannot find a spawn tool, report \"NO_SPAWN_TOOL_AVAILABLE\". Do NOT make up tool names." }] })
+```
 
 After the spawn completes, extract the minion's output from the spawn result.
 

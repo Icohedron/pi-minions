@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- BREAKING CHANGE: `spawn` requires a non-empty `tasks` array; top-level `task`, `agent`, and `model` are removed. One item remains a single minion; 2+ run as a parallel batch. `/spawn` is unchanged. See [reference](docs/reference.md#spawn).
+
 ## [0.18.0] - 2026-05-26
 
 - feat: migrate pi-minions to the `@earendil-works` package ecosystem

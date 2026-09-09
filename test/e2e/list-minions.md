@@ -9,7 +9,10 @@ None.
 ## Action
 
 First, call the `spawn` tool with:
-- `task`: `Return the exact word list-check`
+
+```ts
+spawn({ tasks: [{ task: "Return the exact word list-check" }] })
+```
 
 After the foreground spawn completes, call the `list_minions` tool.
 

@@ -9,8 +9,10 @@ None.
 ## Action
 
 Call the `spawn` tool with:
-- `agent`: `nonexistent-agent-xyz`
-- `task`: `Say hello.`
+
+```ts
+spawn({ tasks: [{ task: "Say hello.", agent: "nonexistent-agent-xyz" }] })
+```
 
 The tool call is expected to fail.
 

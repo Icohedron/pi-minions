@@ -4,19 +4,7 @@ pi-minions is a pi-coding-agent extension (`src/index.ts`) that adds recursive s
 
 ## Architecture
 
-| Module | Purpose |
-|--------|---------|
-| `src/index.ts` | Entry point — registers tools, commands, event listeners |
-| `src/tree.ts` | `AgentTree` — minion hierarchy (parent-child, status, usage) |
-| `src/queue.ts` | `ResultQueue` — background result delivery |
-| `src/spawn.ts` | `runMinionSession()` — in-process session creation, streaming, safety controls |
-| `src/minions.ts` | Minion names, ID generation, default prompt |
-| `src/agents.ts` | Agent discovery (global + project paths), frontmatter parsing |
-| `src/render.ts` | TUI rendering for spawn calls |
-| `src/logger.ts` | Structured debug logging |
-| `src/types.ts` | Shared types (`AgentConfig`, `AgentNode`, `QueuedResult`, `SpawnResult`) |
-| `src/tools/*.ts` | Tool implementations (`spawn`, `spawn_bg`, `halt`, `list_agents`, `list_minion_types`, `show_minion`, `steer_minion`) |
-| `src/commands/*.ts` | Command handlers (`/spawn`, `/minions`, `/halt`) |
+pi-minions is foreground-only: minions run as in-process subagent sessions tracked in an in-memory hierarchy; there is no background spawning or result queue. The canonical module map, data flow, and design decisions live in [Architecture](docs/architecture.md) — consult it instead of re-deriving the tree structure from `src/`.
 
 ## Development
 
@@ -54,8 +42,10 @@ If any test run parsing tools area available, ALWAYS pass it raw JSON output wit
 - [Agents](docs/agents.md) — agent creation and configuration
 - [Reference](docs/reference.md) — tool/command schemas and types
 - [Architecture](docs/architecture.md) — module map, data flow, design decisions
+- [Configuration](docs/configuration.md) — global and project settings
 - [Contributing](docs/contributing.md) — dev setup, testing, release
 - [E2E testing](docs/e2e-testing.md) — writing agentic tests
+- [Roadmap](docs/roadmap.md) — current foreground-only work
 
 ## Do NOT
 

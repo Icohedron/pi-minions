@@ -85,7 +85,13 @@ describe("foreground delegation", () => {
     const parentSessionPath = join(cwd, "parent.jsonl");
     const ctx = {
       cwd,
-      modelRegistry: {},
+      modelRegistry: {
+        getAll: () => [
+          { provider: "test", id: "scout-default" },
+          { provider: "test", id: "haiku" },
+        ],
+        hasConfiguredAuth: () => true,
+      },
       sessionManager: { getSessionFile: () => parentSessionPath },
     } as unknown as ExtensionContext;
     const subsessionManager = new SubsessionManager(cwd, parentSessionPath);
@@ -293,7 +299,7 @@ describe("foreground delegation", () => {
       expect(updates.every((update) => update.isBatch && update.minions?.length === 2)).toBe(true);
     });
 
-    it("fails the batch if any minion fails", async () => {
+    it("fails the batch with inline error text if any minion fails", async () => {
       vi.mocked(createAgentSession).mockRejectedValueOnce(new Error("bad"));
       const { tree, pi, ctx, subsessionManager } = createDeps();
 
@@ -305,7 +311,7 @@ describe("foreground delegation", () => {
           undefined,
           ctx,
         ),
-      ).rejects.toThrow(/Batch spawn failed/);
+      ).rejects.toThrow(/Batch spawn failed \(1\/2 failed\).*bad/);
       expect(tree.getRoots().map((node) => node.status)).toEqual(["failed", "completed"]);
     });
   });

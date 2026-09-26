@@ -24,7 +24,12 @@ const TaskDescriptor = Type.Object({
         "Name of the agent to invoke. If omitted, spawns an ephemeral minion with default capabilities.",
     }),
   ),
-  model: Type.Optional(Type.String({ description: "Override the agent's model for this task" })),
+  model: Type.Optional(
+    Type.String({
+      description:
+        "Model for this minion's session, e.g. 'openrouter/z-ai/glm-5.3-flash', 'kimi-coding/k3', or an unambiguous bare model id. Resolved against the model registry; fails loudly if unknown or unauthenticated.",
+    }),
+  ),
 });
 
 export const SpawnToolParams = Type.Object(
@@ -274,9 +279,12 @@ async function executeSpawn(
       throw new Error(`Minion ${firstMinion.name} (${firstMinion.id}) failed: ${errorMsg}`);
     }
 
-    const failedNames = minions.filter((m) => m.status === "failed").map((m) => m.name);
+    const failed = minions.filter((m) => m.status === "failed");
+    const detail = failed
+      .map((m) => `${m.name}: ${(m.finalOutput || "exited with error").split("\n")[0].slice(0, 300)}`)
+      .join("; ");
     throw new Error(
-      `Batch spawn failed. Failed minions: ${failedNames.join(", ")}. Check individual outputs for details.`,
+      `Batch spawn failed (${failed.length}/${minions.length} failed). ${detail}`,
     );
   }
 

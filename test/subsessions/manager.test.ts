@@ -126,6 +126,97 @@ describe("SubsessionManager", () => {
       const { createAgentSession } = await import("@earendil-works/pi-coding-agent");
       expect(createAgentSession).toHaveBeenCalled();
     });
+
+    it("applies config.model override to createAgentSession", async () => {
+      const fakeModel = { provider: "openrouter", id: "deepseek/deepseek-v4.1-flash" };
+      const registry = {
+        getAll: () => [fakeModel],
+        hasConfiguredAuth: () => true,
+      } as any;
+
+      await manager.create({
+        id: "test-model-override",
+        name: "model-override-minion",
+        task: "do something",
+        config: {
+          name: "test",
+          description: "Test agent",
+          systemPrompt: "You are a test agent.",
+          source: "ephemeral",
+          filePath: "/tmp/test.md",
+          model: "openrouter/deepseek/deepseek-v4.1-flash",
+        },
+        spawnedBy: "tool-call-1",
+        cwd: tempDir,
+        modelRegistry: registry,
+      });
+
+      await new Promise((r) => setTimeout(r, 10));
+
+      const { createAgentSession } = await import("@earendil-works/pi-coding-agent");
+      expect(createAgentSession).toHaveBeenCalledWith(
+        expect.objectContaining({
+          model: expect.objectContaining({
+            provider: "openrouter",
+            id: "deepseek/deepseek-v4.1-flash",
+          }),
+        }),
+      );
+    });
+
+    it("keeps parent model when config.model is unset", async () => {
+      const parentModel = { provider: "openrouter", id: "z-ai/glm-5.3-flash" } as any;
+
+      await manager.create({
+        id: "test-parent-model",
+        name: "parent-model-minion",
+        task: "do something",
+        config: {
+          name: "test",
+          description: "Test agent",
+          systemPrompt: "You are a test agent.",
+          source: "ephemeral",
+          filePath: "/tmp/test.md",
+        },
+        spawnedBy: "tool-call-1",
+        cwd: tempDir,
+        modelRegistry: {} as any,
+        parentModel,
+      });
+
+      await new Promise((r) => setTimeout(r, 10));
+
+      const { createAgentSession } = await import("@earendil-works/pi-coding-agent");
+      expect(createAgentSession).toHaveBeenCalledWith(
+        expect.objectContaining({ model: parentModel }),
+      );
+    });
+
+    it("rejects with a clear error when config.model is unknown", async () => {
+      const registry = {
+        getAll: () => [{ provider: "openrouter", id: "z-ai/glm-5.3-flash" }],
+        hasConfiguredAuth: () => true,
+      } as any;
+
+      await expect(
+        manager.create({
+          id: "test-bad-model",
+          name: "bad-model-minion",
+          task: "do something",
+          config: {
+            name: "test",
+            description: "Test agent",
+            systemPrompt: "You are a test agent.",
+            source: "ephemeral",
+            filePath: "/tmp/test.md",
+            model: "openrouter/nope-model",
+          },
+          spawnedBy: "tool-call-1",
+          cwd: tempDir,
+          modelRegistry: registry,
+        }),
+      ).rejects.toThrow(/did not match any model/);
+    });
   });
 
   describe("getMetadata", () => {

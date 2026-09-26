@@ -9,6 +9,7 @@ import {
   SettingsManager,
 } from "@earendil-works/pi-coding-agent";
 import { logger } from "../logger.js";
+import { resolveModelString } from "../model-match.js";
 import { formatToolCall } from "../render.js";
 import type { EventBus } from "./event-bus.js";
 import { MINION_COMPLETE_CHANNEL, MINION_PROGRESS_CHANNEL } from "./event-bus.js";
@@ -100,10 +101,29 @@ export class SubsessionManager {
     });
     await loader.reload();
 
+    // Per-minion model override: config.model comes from the spawn spec's `model`
+    // field (ephemeral minions) or the agent frontmatter `model` (named agents).
+    // When set, it replaces the parent's model for this minion's session.
+    let sessionModel = parentModel;
+    if (config.model) {
+      const override = resolveModelString(modelRegistry, config.model);
+      if (!modelRegistry.hasConfiguredAuth(override)) {
+        throw new Error(
+          `Model override "${config.model}" (${override.provider}/${override.id}) has no configured auth. Run /login for its provider or pick another model.`,
+        );
+      }
+      logger.debug("spawn:session", "model override applied", {
+        id,
+        requested: config.model,
+        resolved: `${override.provider}/${override.id}`,
+      });
+      sessionModel = override;
+    }
+
     // Create the agent session
     const { session } = await createAgentSession({
       cwd: this.cwd,
-      model: parentModel,
+      model: sessionModel,
       customTools: options.customTools,
       sessionManager,
       settingsManager,

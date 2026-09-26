@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-06-18
+
+- feat: apply per-minion model overrides to minion sessions — resolve the spawn
+  spec's `model` field against the model registry instead of using it
+  display-only; accept `provider/id` and unambiguous bare ids (case-insensitive),
+  fail unknown/ambiguous/unauthenticated models loudly per-minion while the rest
+  of the batch proceeds, and surface per-minion error text inline in failure
+  messages
+- chore: spawn schema defaults to the `tasks` array
+
 - BREAKING CHANGE: `spawn` requires a non-empty `tasks` array; top-level `task`, `agent`, and `model` are removed. One item remains a single minion; 2+ run as a parallel batch. `/spawn` is unchanged. See [reference](docs/reference.md#spawn).
 
 ## [0.18.0] - 2026-05-26

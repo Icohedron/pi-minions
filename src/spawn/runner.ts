@@ -123,7 +123,8 @@ export async function runSingleMinion(opts: {
     const currentStatus = tree.get(m.id)?.status;
     if (currentStatus !== "aborted") {
       m.status = result.exitCode === 0 ? "completed" : "failed";
-      m.finalOutput = m.status === "failed" ? result.error || result.finalOutput : result.finalOutput;
+      m.finalOutput =
+        m.status === "failed" ? result.error || result.finalOutput : result.finalOutput;
       m.usage = result.usage;
       const errorMsg = result.error;
       tree.updateStatus(m.id, m.status, result.exitCode, errorMsg);

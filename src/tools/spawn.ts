@@ -281,11 +281,11 @@ async function executeSpawn(
 
     const failed = minions.filter((m) => m.status === "failed");
     const detail = failed
-      .map((m) => `${m.name}: ${(m.finalOutput || "exited with error").split("\n")[0].slice(0, 300)}`)
+      .map(
+        (m) => `${m.name}: ${(m.finalOutput || "exited with error").split("\n")[0].slice(0, 300)}`,
+      )
       .join("; ");
-    throw new Error(
-      `Batch spawn failed (${failed.length}/${minions.length} failed). ${detail}`,
-    );
+    throw new Error(`Batch spawn failed (${failed.length}/${minions.length} failed). ${detail}`);
   }
 
   return result;

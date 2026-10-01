@@ -17,6 +17,7 @@ export function createMockContext(cwd: string): ExtensionContext {
       notify: vi.fn(),
       theme: { fg: vi.fn((_, text: string) => text) } as any,
     } as any,
+    mode: "tui",
     hasUI: true,
     cwd,
     sessionManager: {
@@ -36,6 +37,8 @@ export function createMockContext(cwd: string): ExtensionContext {
     } as any,
     modelRegistry: {} as any,
     model: undefined,
+    scopedModels: [],
+    isProjectTrusted: vi.fn().mockReturnValue(true),
     isIdle: vi.fn().mockReturnValue(true),
     signal: undefined,
     abort: vi.fn(),

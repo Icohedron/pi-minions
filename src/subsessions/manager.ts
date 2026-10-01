@@ -127,7 +127,6 @@ export class SubsessionManager {
       customTools: options.customTools,
       sessionManager,
       settingsManager,
-      modelRegistry,
       resourceLoader: loader,
     });
 

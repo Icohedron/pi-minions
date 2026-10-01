@@ -40,9 +40,9 @@ vi.mock("@earendil-works/pi-coding-agent", () => {
 
   return {
     createAgentSession: vi.fn().mockResolvedValue({ session: mockSession }),
-    DefaultResourceLoader: vi.fn().mockImplementation(() => ({
-      reload: vi.fn().mockResolvedValue(undefined),
-    })),
+    DefaultResourceLoader: class {
+      reload = vi.fn().mockResolvedValue(undefined);
+    },
     SessionManager: {
       create: vi.fn().mockReturnValue(mockSessionManager),
     },

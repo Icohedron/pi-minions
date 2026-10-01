@@ -42,7 +42,7 @@ function getSpinner(spinnerFrames: string[] | undefined, frameIndex: number): st
 
 export function renderBatchMinions(
   data: SpawnToolDetails,
-  _options: MessageRenderOptions,
+  _options: Pick<MessageRenderOptions, "expanded">,
   theme: Theme,
 ): SpawnRenderResult {
   const minions = data.minions ?? [];
@@ -119,7 +119,7 @@ export function renderBatchMinions(
 
 export function renderSingleMinion(
   data: SpawnToolDetails,
-  options: MessageRenderOptions,
+  options: Pick<MessageRenderOptions, "expanded">,
   theme: Theme,
 ): SpawnRenderResult {
   let name = data.name;
@@ -205,7 +205,7 @@ export function renderSingleMinion(
 
 export function minionSpawnRenderer(
   message: { details?: SpawnToolDetails },
-  options: MessageRenderOptions,
+  options: Pick<MessageRenderOptions, "expanded">,
   theme: Theme,
 ): SpawnRenderResult | undefined {
   const data = message.details;

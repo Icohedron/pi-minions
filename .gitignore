@@ -9,3 +9,14 @@ dist/
 # DO NOT MODIFY THIS
 # The entire tmp/ directory must be ignored
 tmp/
+
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
